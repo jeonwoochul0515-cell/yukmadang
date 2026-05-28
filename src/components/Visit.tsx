@@ -4,6 +4,7 @@ import { store } from '../data/store';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const naverMapUrl = `https://map.naver.com/p/search/${encodeURIComponent('육마당 사상본점')}`;
+const googleMapsEmbed = `https://www.google.com/maps?q=${encodeURIComponent('부산광역시 사상구 사상로233번길 40')}&z=17&output=embed`;
 
 export function Visit() {
   const { t } = useLanguage();
@@ -29,26 +30,36 @@ export function Visit() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.8 }}
-            className="lg:col-span-7 rounded-2xl overflow-hidden bg-charcoal-700/40 border border-charcoal-600/40 aspect-[4/3] lg:aspect-auto lg:min-h-[520px]"
+            className="lg:col-span-7 relative rounded-2xl overflow-hidden border border-charcoal-600/40 aspect-[4/3] lg:aspect-auto lg:min-h-[520px] bg-charcoal-700/40"
           >
-            <a
-              href={naverMapUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full h-full relative group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-charcoal-700 via-charcoal to-charcoal-700">
-                <div className="absolute inset-0 grain opacity-30" />
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                  <span className="font-display text-7xl text-ember/30 mb-4">肉</span>
-                  <p className="font-display text-2xl text-hanji mb-2">{store.address.line1}</p>
-                  <p className="text-sm text-bone/60 mb-8">{store.transit.subway}</p>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-hanji/30 px-6 py-3 text-sm text-hanji group-hover:bg-ember group-hover:text-charcoal group-hover:border-ember transition-all">
-                    {t.visit.findMap} <span aria-hidden>↗</span>
-                  </span>
-                </div>
+            <iframe
+              src={googleMapsEmbed}
+              title="육마당 사상본점 위치"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="absolute inset-0 w-full h-full border-0 grayscale-[20%] contrast-110"
+              allowFullScreen
+            />
+
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-charcoal via-charcoal/70 to-transparent" />
+
+            <div className="absolute bottom-5 left-5 right-5 sm:bottom-6 sm:left-6 sm:right-auto sm:max-w-[360px] pointer-events-auto">
+              <div className="rounded-xl bg-charcoal/85 backdrop-blur-md border border-charcoal-600/60 p-4 sm:p-5">
+                <p className="font-display text-base sm:text-lg text-hanji leading-snug mb-1">
+                  {store.address.line1}
+                </p>
+                <p className="text-xs text-bone/60 mb-3">{store.transit.subway}</p>
+                <a
+                  href={naverMapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-ember text-charcoal text-xs font-medium px-4 py-2 hover:bg-ember-glow transition-colors"
+                >
+                  {t.visit.findMap}
+                  <span aria-hidden>↗</span>
+                </a>
               </div>
-            </a>
+            </div>
           </motion.div>
 
           <motion.div
