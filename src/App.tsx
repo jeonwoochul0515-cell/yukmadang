@@ -5,6 +5,7 @@ import { Story } from './components/Story';
 import { SignatureMenu } from './components/SignatureMenu';
 import { FullMenu } from './components/FullMenu';
 import { Reviews } from './components/Reviews';
+import { InstagramSection } from './components/InstagramSection';
 import { Visit } from './components/Visit';
 import { Footer } from './components/Footer';
 
@@ -18,6 +19,7 @@ function App() {
         <SignatureMenu />
         <FullMenu />
         <Reviews />
+        <InstagramSection />
         <Visit />
       </main>
       <Footer />

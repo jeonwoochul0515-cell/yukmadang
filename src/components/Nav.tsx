@@ -1,17 +1,12 @@
-// 상단 sticky 네비게이션 — 스크롤 시 배경이 채워지는 인터랙션
+// 상단 sticky 네비게이션 — 스크롤 시 배경이 채워지고 언어 토글이 함께 노출된다
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { store } from '../data/store';
-
-const links = [
-  { href: '#story', label: '이야기' },
-  { href: '#signature', label: '대표 메뉴' },
-  { href: '#menu', label: '전체 메뉴' },
-  { href: '#reviews', label: '리뷰' },
-  { href: '#visit', label: '오시는 길' },
-];
+import { useLanguage } from '../i18n/LanguageContext';
+import { LANGS, LANG_SHORT } from '../i18n/types';
 
 export function Nav() {
+  const { t, lang, setLang } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -20,6 +15,14 @@ export function Nav() {
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  const links = [
+    { href: '#story', label: t.nav.story },
+    { href: '#signature', label: t.nav.signature },
+    { href: '#menu', label: t.nav.menu },
+    { href: '#reviews', label: t.nav.reviews },
+    { href: '#visit', label: t.nav.visit },
+  ];
 
   return (
     <motion.header
@@ -41,10 +44,11 @@ export function Nav() {
             肉
           </span>
           <span className="hidden sm:inline ml-2 text-xs text-bone/60 tracking-widest">
-            SASANG
+            {t.nav.sasang}
           </span>
         </a>
-        <nav className="hidden md:flex items-center gap-8">
+
+        <nav className="hidden md:flex items-center gap-7">
           {links.map((l) => (
             <a
               key={l.href}
@@ -54,20 +58,66 @@ export function Nav() {
               {l.label}
             </a>
           ))}
+
+          <LangSwitcher current={lang} onSelect={setLang} />
+
           <a
             href={`tel:${store.contact.phone}`}
             className="inline-flex items-center gap-2 rounded-full bg-ember px-5 py-2 text-sm font-medium text-charcoal hover:bg-ember-glow transition-colors"
           >
-            예약 전화
+            {t.nav.reservation}
           </a>
         </nav>
-        <a
-          href={`tel:${store.contact.phone}`}
-          className="md:hidden text-sm text-ember font-medium"
-        >
-          예약 전화
-        </a>
+
+        <div className="md:hidden flex items-center gap-3">
+          <LangSwitcher current={lang} onSelect={setLang} compact />
+          <a
+            href={`tel:${store.contact.phone}`}
+            className="text-sm text-ember font-medium"
+          >
+            {t.nav.reservation}
+          </a>
+        </div>
       </div>
     </motion.header>
+  );
+}
+
+function LangSwitcher({
+  current,
+  onSelect,
+  compact = false,
+}: {
+  current: typeof LANGS[number];
+  onSelect: (l: typeof LANGS[number]) => void;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className={`inline-flex items-center rounded-full border border-bone/15 ${
+        compact ? 'p-0.5 text-[10px]' : 'p-1 text-[11px]'
+      }`}
+      role="group"
+      aria-label="Language"
+    >
+      {LANGS.map((l) => {
+        const active = l === current;
+        return (
+          <button
+            key={l}
+            type="button"
+            onClick={() => onSelect(l)}
+            aria-pressed={active}
+            className={`${compact ? 'px-2 py-1' : 'px-2.5 py-1'} rounded-full font-mono tracking-wider transition-colors ${
+              active
+                ? 'bg-ember text-charcoal'
+                : 'text-bone/60 hover:text-hanji'
+            }`}
+          >
+            {LANG_SHORT[l]}
+          </button>
+        );
+      })}
+    </div>
   );
 }
